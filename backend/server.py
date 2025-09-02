@@ -168,8 +168,12 @@ async def analyze_scene(request: SceneAnalysisRequest):
         description = response.strip()
         
         # Store the scene description for this client
-        if request.client_id in manager.client_sessions:
-            manager.client_sessions[request.client_id]["last_scene_description"] = description
+        if request.client_id not in manager.client_sessions:
+            manager.client_sessions[request.client_id] = {
+                "last_scene_description": "",
+                "conversation_history": []
+            }
+        manager.client_sessions[request.client_id]["last_scene_description"] = description
         
         return SceneAnalysisResponse(
             description=description,
